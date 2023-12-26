@@ -1,23 +1,39 @@
-import logo from './logo.svg';
+import { Button, Navbar, Container, Nav, Row, Col } from "react-bootstrap";
 import './App.css';
+import { Route, Routes, useNavigate } from "react-router-dom";
+import MsdsCheck from "./component/MsdsCheck";
 
 function App() {
+  let navigate = useNavigate();
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar bg="light" data-bs-theme="light">
+                <Container>
+                    <Navbar.Brand
+                        onClick={() => {
+                            navigate("/");
+                        }}
+                    >
+                        작업환경측정
+                    </Navbar.Brand>
+                    <Nav className="me-auto">
+                        <Nav.Link
+                            onClick={() => {
+                                navigate("/msdscheck");
+                            }}
+                        >
+                            MSDS
+                        </Nav.Link>
+                    </Nav>
+                </Container>
+            </Navbar>
+
+
+      <Routes>
+        <Route path="/msdscheck" element={<MsdsCheck/>}/>
+      </Routes>
+      
     </div>
   );
 }
