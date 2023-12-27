@@ -69,9 +69,8 @@ app.get("/api/msdscheck", async function (req, res) {
               chemName = ""; // 또는 다른 기본값으로 설정
             }
 
-            console.log("chemCas?", chemCas)
-            console.log("casNo?", casNo)
-            console.log("chemCas == casNo?", chemCas == casNo)
+
+
             if (chemCas == casNo) {
                 const secondResponse = await axios.get(`${endPoint}chemdetail15?chemId=${chemId}&ServiceKey=${serviceKey}`);
                 const secondXmlString = secondResponse.data;
@@ -90,12 +89,12 @@ app.get("/api/msdscheck", async function (req, res) {
                 healthCheckYn = helthCheckYnMatch ? "Y" : "N";
 
                 // 측정주기 추출
-                const measurePeriodMatch = itemD.match(/측정주기 : ([^)]+)/);
-                measurementCycle = measurePeriodMatch ? measurePeriodMatch[1] : "";
+                const measurePeriodMatch = itemD.match(/측정주기 : .*?(\d+)개월/);
+                measurementCycle = measurePeriodMatch ? parseInt(measurePeriodMatch[1], 10) : 0;
 
                 // 진단주기 추출
-                const diagnosePeriodMatch = itemD.match(/진단주기 : ([^)]+)/);
-                healthCheckCycle = diagnosePeriodMatch ? diagnosePeriodMatch[1] : "";
+                const diagnosePeriodMatch = itemD.match(/진단주기 : .*?(\d+)개월/);
+                healthCheckCycle = diagnosePeriodMatch ? parseInt(diagnosePeriodMatch[1], 10) : 0;
 
                 // 특별관리물질 여부 추출
                 const specialYnMatch = itemD.match(/특별관리물질/);

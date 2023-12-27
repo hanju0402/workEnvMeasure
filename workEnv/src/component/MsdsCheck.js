@@ -1,12 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../App.css";
 import CloseButton from "react-bootstrap/CloseButton";
+import Table from 'react-bootstrap/Table';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 export default function MsdsCheck() {
     const [casNo, setCasNo] = useState([""]);
     const [inputCount, setInputCount] = useState(1);
     const [msdsInfo, setMsdsInfo] = useState([{}]);
+    const [filterMsdsInfo, setFilterMsdsInfo] = useState([{}]);
+    const [measurementY, setMeasurementY] = useState([]);
+    const [specialY, setSpecialY] = useState([]);
+    const [view, setView] = useState(false);
+
+    useEffect(() => {
+        // 필터링 로직
+        const findFiltered = msdsInfo.filter(item => item.findYn == "Y");
+        const measurementFiltered = msdsInfo.filter(item => item.findYn == "Y");
+        const specialFiltered = msdsInfo.filter(item => item.findYn == "Y");
+        setFilterMsdsInfo(findFiltered);
+    }, [msdsInfo]);
+
+    useEffect(() => {
+        // 필터링 로직
+        const measurementFiltered = filterMsdsInfo.filter(item => item.measurementYn == "Y" && item.specialYn == "N").map(item => item.chemName);
+        const specialFiltered = filterMsdsInfo.filter(item => item.measurementYn == "Y" && item.specialYn == "Y").map(item => item.chemName);
+
+        const uniqueMeasurement = [...new Set(measurementFiltered)];
+        const uniqueSpecial = [...new Set(specialFiltered)];
+
+        setMeasurementY(uniqueMeasurement);
+        setSpecialY(uniqueSpecial);
+    }, [filterMsdsInfo]);
 
     const handleInputChange = (index, value) => {
         if (/^[0-9-]*$/.test(value)) {
@@ -21,7 +49,7 @@ export default function MsdsCheck() {
     const addInput = () => {
         setInputCount(inputCount + 1);
         setCasNo([...casNo, ""]);
-        setMsdsInfo([...msdsInfo, ""]); // 각 인풋 박스에 대한 데이터를 빈 문자열로 초기화
+        setMsdsInfo([...msdsInfo, {}]); // 각 인풋 박스에 대한 데이터를 빈 문자열로 초기화
     };
 
     const removeInput = (index) => {
@@ -42,6 +70,7 @@ export default function MsdsCheck() {
                 })
                 .then((response) => {
                     setMsdsInfo(response.data);
+                    setView(true);
                 })
                 .catch((error) => {
                     // Handle errors
@@ -52,39 +81,84 @@ export default function MsdsCheck() {
 
     return (
         <>
+
+
+
+
             <div id="addCasNo">
                 <button style={{ marginLeft: "auto" }} onClick={addInput}>
                     CasNo 추가
-                </button>
+                </button><span>&nbsp;&nbsp;</span>
+                <button onClick={link}>물질확인하기</button>
             </div>
+
+
+
+
+
             <div>
                 {Array.from({ length: inputCount }).map((_, index) => (
-                    <div key={index} style={{ marginBottom: "10px" }}>
-                        <input
-                            value={casNo[index]}
-                            onChange={(e) => handleInputChange(index, e.target.value)}
-                            placeholder="CasNo를 입력해주세요"
-                        />
-                        <CloseButton onClick={() => removeInput(index)} id="remove" />
-                        {msdsInfo[index] && msdsInfo[index].findYn == "N" ? (
-                            "존재하지 않는 CasNo 입니다."
-                        ) : (
-                            <>
-                                <span>물질명:</span>{" "}
-                                <span style={{ color: msdsInfo[index].specialYn === "Y" ? "red" : "black" }}>
-                                    {" "}
-                                    {msdsInfo[index].chemName}
-                                </span>
-                            </>
-                        )}
+                    <div key={index} style={{ marginBottom: "20px" }}>
+                        <div >
+                            <Container>
+                                <Row>
+                                    <Col md={2} style={{ marginLeft: "100px" }}>
+                                        <input
+                                            value={casNo[index]}
+                                            onChange={(e) => handleInputChange(index, e.target.value)}
+                                            placeholder="CasNo를 입력해주세요"
+                                        />
+                                    </Col>
+                                    <Col md={1} style={{marginLeft: "-50px" }}>
+                                        <CloseButton onClick={() => removeInput(index)} id="remove" />
+                                    </Col>
+                                    <Col md={7}>
+                                        <span style={{marginLeft: "-600px" }}>
+                                            {msdsInfo[index] && msdsInfo[index].findYn === "N" && (
+                                                "존재하지 않는 CasNo 입니다."
+                                            )}
+                                        </span>
+                                    </Col>
+                                    
+                                </Row>
+                            </Container>
+                        </div>
                     </div>
                 ))}
             </div>
             <div></div>
             <div>
-                <button onClick={link}>물질확인하기</button>
             </div>
-            <div>{msdsInfo.some((info) => info.findYn === 'Y') && <div>유효한 msdsInfo 정보가 있습니다.</div>}</div>
+            <div>{msdsInfo.some((info) => info.findYn === 'Y') && <Table striped bordered hover>
+                <thead>
+                    <tr>
+                        <th>CAS No</th>
+                        <th>물질명</th>
+                        <th>측정여부(주기)</th>
+                        <th>특별관리물질여부</th>
+                        <th>특수건강검진여주(주기)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {filterMsdsInfo.map((info, index) => (
+                        <tr key={index}>
+                            <td>{info.chemCas}</td>
+                            <td>{info.chemName}</td>
+                            <td>{info.measurementYn == "Y" ? `대상(${info.measurementCycle}개월)` : "비대상"}</td>
+                            <td>{info.specialYn == "Y" ? "대상" : "비대상"}</td>
+                            <td>{info.healthCheckYn == "Y" ? `대상(${info.healthCheckCycle}개월)` : "비대상"}</td>
+                        </tr>
+                    ))}
+                    <tr>
+                        <td colSpan={2}>측정대상물질 모음</td>
+                        <td colSpan={3}>{measurementY.join(',')}{specialY.length > 0 && <><span>,</span><span style={{
+                            color: "red"
+                        }}>{specialY.join(',')}</span></>}</td>
+                    </tr>
+                </tbody>
+            </Table>
+
+            }</div>
         </>
     );
 }

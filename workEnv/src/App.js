@@ -2,6 +2,7 @@ import { Button, Navbar, Container, Nav, Row, Col } from "react-bootstrap";
 import './App.css';
 import { Route, Routes, useNavigate } from "react-router-dom";
 import MsdsCheck from "./component/MsdsCheck";
+import MainBoard from "./component/MainBoard";
 
 function App() {
   let navigate = useNavigate();
@@ -28,9 +29,11 @@ function App() {
                     </Nav>
                 </Container>
             </Navbar>
+            
 
 
       <Routes>
+        <Route path="/" element={<MainBoard/>}/>
         <Route path="/msdscheck" element={<MsdsCheck/>}/>
       </Routes>
       

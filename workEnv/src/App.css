@@ -7,6 +7,15 @@
     pointer-events: none;
 }
 
+.main-bg {
+    width: 100%;
+    height: 70vh;
+    background-image: url(../public/mainBgmImg.jpg);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
 #addCasNo {
     display: flex;
     justify-content: space-between;
@@ -47,6 +56,7 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
