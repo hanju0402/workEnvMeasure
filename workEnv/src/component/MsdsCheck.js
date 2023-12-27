@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
-import '../App.css';
-import CloseButton from 'react-bootstrap/CloseButton';
+import "../App.css";
+import CloseButton from "react-bootstrap/CloseButton";
 
 export default function MsdsCheck() {
     const [casNo, setCasNo] = useState([""]);
     const [inputCount, setInputCount] = useState(1);
-    const [msdsInfo, setMsdsInfo] = useState([{chemName: "", chemCas:"", measurementYn:"", measurementCycle:"", healthCheckYn:"", healthCheckCycle:"", specialYn:"", findYn:""}]);
+    const [msdsInfo, setMsdsInfo] = useState([{}]);
 
     const handleInputChange = (index, value) => {
         if (/^[0-9-]*$/.test(value)) {
@@ -35,17 +35,19 @@ export default function MsdsCheck() {
     };
 
     const link = () => {
-        axios
-            .get("http://localhost:8080/api/msdscheck", {
-                params: { casNo },
-            })
-            .then((response) => {
-                setMsdsInfo(response.data);
-            })
-            .catch((error) => {
-                // Handle errors
-                console.error("Error:", error);
-            });
+        if (casNo.length > 0) {
+            axios
+                .get("http://localhost:8080/api/msdscheck", {
+                    params: { casNo },
+                })
+                .then((response) => {
+                    setMsdsInfo(response.data);
+                })
+                .catch((error) => {
+                    // Handle errors
+                    console.error("Error:", error);
+                });
+        }
     };
 
     return (
@@ -64,7 +66,17 @@ export default function MsdsCheck() {
                             placeholder="CasNo를 입력해주세요"
                         />
                         <CloseButton onClick={() => removeInput(index)} id="remove" />
-                        {msdsInfo[index] && msdsInfo[index].findYn=="N" ?  "존재하지 않는 CasNo 입니다." : msdsInfo[index].chemName}
+                        {msdsInfo[index] && msdsInfo[index].findYn == "N" ? (
+                            "존재하지 않는 CasNo 입니다."
+                        ) : (
+                            <>
+                                <span>물질명:</span>{" "}
+                                <span style={{ color: msdsInfo[index].specialYn === "Y" ? "red" : "black" }}>
+                                    {" "}
+                                    {msdsInfo[index].chemName}
+                                </span>
+                            </>
+                        )}
                     </div>
                 ))}
             </div>
@@ -72,7 +84,7 @@ export default function MsdsCheck() {
             <div>
                 <button onClick={link}>물질확인하기</button>
             </div>
+            <div>{msdsInfo.some((info) => info.findYn === 'Y') && <div>유효한 msdsInfo 정보가 있습니다.</div>}</div>
         </>
     );
 }
-

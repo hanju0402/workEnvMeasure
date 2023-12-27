@@ -58,7 +58,7 @@ app.get("/api/msdscheck", async function (req, res) {
 
 
             console.log("뭔데?", 'item' in result.response.body[0]);
-            // casNo 속성이 존재하는지 확인
+            // 'item' 속성이 존재하는 경우의 처리
             if (result.response.body && result.response.body[0].items && result.response.body[0].items[0] && 'item' in result.response.body[0].items[0]) {
               chemCas = result.response.body[0].items[0].item[0].casNo[0];
               chemName = result.response.body[0].items[0].item[0].chemNameKor[0];
@@ -90,11 +90,11 @@ app.get("/api/msdscheck", async function (req, res) {
                 healthCheckYn = helthCheckYnMatch ? "Y" : "N";
 
                 // 측정주기 추출
-                const measurePeriodMatch = itemD.match(/측정주기 : (\d+)개월/);
+                const measurePeriodMatch = itemD.match(/측정주기 : ([^)]+)/);
                 measurementCycle = measurePeriodMatch ? measurePeriodMatch[1] : "";
 
                 // 진단주기 추출
-                const diagnosePeriodMatch = itemD.match(/진단주기 : (\d+)개월/);
+                const diagnosePeriodMatch = itemD.match(/진단주기 : ([^)]+)/);
                 healthCheckCycle = diagnosePeriodMatch ? diagnosePeriodMatch[1] : "";
 
                 // 특별관리물질 여부 추출
