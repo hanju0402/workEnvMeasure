@@ -4,11 +4,12 @@ import axios from "axios";
 
 function MsdsDetailPage({ chemId, detailNo }) {
     const [data, setData] = useState([]);
+    const baseURL = process.env.REACT_APP_API_BASE_URL || "https://port-0-workenvmeasure-5r422alqp5tjlj.sel4.cloudtype.app";
 
     useEffect(() => {
         // API 호출
         axios
-            .get("http://port-0-workenvmeasure-5r422alqp5tjlj.sel4.cloudtype.app/api/msdsdetailcheck", {
+            .get(`${baseURL}/api/msdsdetailcheck`, {
                 params: { chemId, detailNo },
             })
             .then((response) => {

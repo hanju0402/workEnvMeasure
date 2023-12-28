@@ -19,6 +19,7 @@ export default function MsdsCheck() {
     const [view, setView] = useState(false);
     const [loading, setLoading] = useState(false);
     const [ficNo, setFicNo] = useState(0);
+    const baseURL = process.env.REACT_APP_API_BASE_URL || "https://port-0-workenvmeasure-5r422alqp5tjlj.sel4.cloudtype.app";
 
     useEffect(() => {
         // 필터링 로직
@@ -76,7 +77,7 @@ export default function MsdsCheck() {
         if (casNo.length > 0) {
             setLoading(true);
             axios
-                .get("http://port-0-workenvmeasure-5r422alqp5tjlj.sel4.cloudtype.app/api/msdscheck", {
+                .get(`${baseURL}/api/msdscheck`, {
                     params: { casNo },
                 })
                 .then((response) => {
