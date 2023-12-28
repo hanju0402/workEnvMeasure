@@ -8,7 +8,7 @@ function MsdsDetailPage({ chemId, detailNo }) {
     useEffect(() => {
         // API 호출
         axios
-            .get("http://localhost:8080/api/msdsdetailcheck", {
+            .get("http://port-0-workenvmeasure-5r422alqp5tjlj.sel4.cloudtype.app/api/msdsdetailcheck", {
                 params: { chemId, detailNo },
             })
             .then((response) => {
