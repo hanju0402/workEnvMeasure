@@ -76,7 +76,7 @@ export default function MsdsCheck() {
         if (casNo.length > 0) {
             setLoading(true);
             axios
-                .get("http://port-0-workenvmeasure-5r422alqp5tjlj.sel4.cloudtype.app/api/msdscheck", {
+                .get("http://localhost:8080/api/msdscheck", {
                     params: { casNo },
                 })
                 .then((response) => {
