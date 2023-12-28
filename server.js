@@ -83,7 +83,6 @@ app.get("/api/msdscheck", async function (req, res) {
 
             const result = await parseStringPromise(xmlString);
 
-            console.log("뭔데?", "item" in result.response.body[0]);
             // 'item' 속성이 존재하는 경우의 처리
             if (
                 result.response.body &&
@@ -109,7 +108,6 @@ app.get("/api/msdscheck", async function (req, res) {
                 const secondResult = await parseStringPromise(secondXmlString);
 
                 const itemD = secondResult.response.body[0].items[0].item[0].itemDetail[0];
-                console.log("법", itemD);
 
                 // 측정여부 추출
                 const measureYnMatch = itemD.match(/작업환경측정대상물질/);
@@ -172,7 +170,6 @@ app.get("/api/msdscheck", async function (req, res) {
         }
     }
 
-    console.log("최종데이터리스트 => ", promiseArray);
     res.json(promiseArray);
 });
 

@@ -29,9 +29,6 @@ export default function MsdsCheck() {
 
     useEffect(() => {
         // 필터링 로직
-        console.log("아나0", ficNo);
-        console.log("아나1", filterMsdsInfo[0]);
-        console.log("아나2", filterMsdsInfo[Number(inputCount)]);
         const measurementFiltered = filterMsdsInfo
             .filter((item) => item.measurementYn == "Y" && item.specialYn == "N")
             .map((item) => item.chemName);
@@ -96,7 +93,6 @@ export default function MsdsCheck() {
     const [showModal, setShowModal] = useState(false);
 
     const handleShow = (index) => {
-        console.log("???..", index);
         setFicNo(index);
         setShowModal(true);
     };
@@ -119,19 +115,19 @@ export default function MsdsCheck() {
 
             <div>
                 {Array.from({ length: inputCount }).map((_, index) => (
-                    <div key={index} style={{ marginBottom: "20px" }}>
+                    <div key={index} className="mb-3">
                         <div>
                             <Container>
                                 <Row>
-                                    <Col md={2} style={{ marginLeft: "-250px" }}>
+                                    <Col md={2} xs={12}>
                                         <input
                                             value={casNo[index]}
                                             onChange={(e) => handleInputChange(index, e.target.value)}
                                             placeholder="CasNo를 입력해주세요"
-                                            style={{ width: "300px" }}
+                                            style={{ width: "100%" }}
                                         />
                                     </Col>
-                                    <Col md={1} style={{ marginLeft: "60px" }}>
+                                    <Col md={1} xs={12} className="mb-3" style={{ marginLeft: "-50px" }}>
                                         <CloseButton onClick={() => removeInput(index)} id="remove" />
                                     </Col>
                                     <Col md={7}>
